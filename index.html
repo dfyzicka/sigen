@@ -12,35 +12,36 @@
     </div>
 
     <div class="input-container">
-        <div class="input-group">
-            <label for="office">Номер офиса:</label>
-            <input type="text" id="office" placeholder="330">
+        <div class="form__group">
+            <input type="text" id="office" class="form__field" placeholder=" " maxlength="3" />
+            <label for="office" class="form__label">Номер офиса:</label>
         </div>
 
-        <div class="input-group">
-            <label for="extension">Добавочный номер (4 цифры):</label>
-            <input type="text" id="extension" placeholder="2144" maxlength="4">
+        <div class="form__group">
+            <input type="text" id="extension" class="form__field" placeholder=" " maxlength="4" />
+            <label for="extension" class="form__label">Добавочный номер:</label>
         </div>
 
-        <div class="input-group">
-            <label>
-                <input type="checkbox" id="showMobile">
-                Показывать сотовый телефон
-            </label>
+        <div class="form__group checkbox-group">
+            <div class="checkbox-wrapper-7">
+                <input class="tgl tgl-ios" id="showMobile" type="checkbox"/>
+                <label class="tgl-btn" for="showMobile"></label>
+            </div>
+            <label for="showMobile" class="form__label checkbox-label">Добавить сотовый телефон</label>
         </div>
 
-        <div class="input-group" id="mobileGroup" class="hidden">
-            <label for="mobile">Сотовый телефон:</label>
-            <input type="text" id="mobile" placeholder="8 999 789 10 12">
+        <div class="form__group" id="mobileGroup" class="hidden">
+            <input type="text" id="mobile" class="form__field" placeholder=" " />
+            <label for="mobile" class="form__label">Сотовый телефон:</label>
         </div>
 
-        <div class="input-group">
-            <label for="email">Email:</label>
-            <input type="text" id="email" placeholder="name@domain.ru">
+        <div class="form__group">
+            <input type="text" id="email" class="form__field" placeholder=" " />
+            <label for="email" class="form__label">Email:</label>
         </div>
     </div>
 
-    <button id="generateButton">Создать подпись</button>
+    <button class="button">Создать подпись</button>
     <br>
     <canvas id="signature" width="600" height="88"></canvas>
 
