@@ -2,12 +2,15 @@ const canvas = document.getElementById('signature');
 const ctx = canvas.getContext('2d');
 const mobileGroup = document.getElementById('mobileGroup');
 const showMobileCheckbox = document.getElementById('showMobile');
+const generateButton = document.getElementById('generateButton');
 
 showMobileCheckbox.addEventListener('change', function() {
     mobileGroup.classList.toggle('hidden', !this.checked);
 });
 
-async function generateSignature() {
+generateButton.addEventListener('click', generateSignature);
+
+function generateSignature() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -107,17 +110,16 @@ async function generateSignature() {
         ctx.drawImage(webIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
         ctx.fillText(web, textX, y + textYAdjust);
 
-        canvas.toBlob(async function(blob) {
-            try {
-                await navigator.clipboard.write([
-                    new ClipboardItem({ 'image/png': blob })
-                ]);
-                console.log('Изображение скопировано в буфер обмена!');
-                alert('Подпись скопирована в буфер обмена. Вставьте её (Ctrl+V) куда угодно!');
-            } catch (err) {
-                console.error('Ошибка копирования в буфер обмена:', err);
-                alert('Не удалось скопировать подпись в буфер обмена. Проверьте консоль.');
-            }
+        // Вместо копирования в буфер обмена создаём ссылку для скачивания
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'signature.png'; // Имя файла для скачивания
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url); // Очищаем ссылку
         }, 'image/png');
     }
 }
