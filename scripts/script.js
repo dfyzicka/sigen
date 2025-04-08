@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fontFamily = 'Calibri'; // Шрифт текста
             const textColor = '#000000'; // Цвет текста
             const lineHeight = 14 * dpr; // Высота строки с учётом dpr
-            const iconWidth = 13 * dpr; // Ширина иконок
+            const iconWidth = 10 * dpr; // Ширина иконок
             const iconHeight = 10 * dpr; // Высота иконок
             const iconOffset = 10 * dpr; // Отступ между иконкой и текстом
             const logoWidth = 171 * dpr; // Ширина логотипа
