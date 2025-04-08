@@ -1,306 +1,218 @@
-/* Подключаем шрифт Rubik */
-@import url('https://fonts.googleapis.com/css?family=Rubik:500');
+// Ждём, пока весь DOM загрузится, чтобы все элементы были доступны
+document.addEventListener('DOMContentLoaded', function () {
+    // Получаем элементы canvas и его 2D-контекст для рисования подписи
+    const canvas = document.getElementById('signature');
+    const ctx = canvas.getContext('2d');
 
-/* Стили для всей страницы */
-body {
-    font-family: Arial, sans-serif; /* Базовый шрифт для текста на странице */
-    display: flex; /* Используем flexbox для центрирования содержимого */
-    flex-direction: column; /* Элементы внутри body выстраиваются вертикально */
-    align-items: center; /* Центрируем содержимое по горизонтали */
-    padding: 20px; /* Внутренний отступ от краёв страницы */
-    background-color: #CCD1D9; /* Серый фон страницы (сохранён из вашего дизайна) */
-}
+    // Получаем элементы для управления видимостью поля "Сотовый телефон"
+    const mobileGroup = document.getElementById('mobileGroup'); // Контейнер поля "Сотовый телефон"
+    const showMobileCheckbox = document.getElementById('showMobile'); // Чекбокс для показа/скрытия поля
 
-/* Стили для контейнера заголовка (логотип + текст "Создание подписи") */
-.header {
-    display: flex; /* Flexbox для выравнивания логотипа и текста в строку */
-    align-items: center; /* Вертикальное центрирование элементов внутри контейнера */
-    margin-bottom: 20px; /* Отступ снизу от заголовка до формы */
-}
+    // Получаем кнопку "Создать подпись" по её классу
+    const generateButton = document.querySelector('.button');
 
-/* Стили для логотипа в заголовке */
-.header img {
-    width: 171px; /* Ширина логотипа */
-    height: 88px; /* Высота логотипа (совпадает с высотой canvas) */
-    margin-right: 15px; /* Отступ справа от логотипа до текста */
-}
+    // Отключаем сглаживание изображений для более чёткого рендеринга на canvas
+    ctx.imageSmoothingEnabled = false;
 
-/* Стили для текста заголовка "Создание подписи" */
-.header h2 {
-    margin: 0; /* Убираем стандартные отступы у заголовка */
-    font-size: 24px; /* Размер шрифта заголовка */
-    color: #FF6200; /* Оранжевый цвет текста (сохранён из оригинального дизайна) */
-    font-family: 'Rubik', sans-serif; /* Шрифт Rubik (такой же, как у кнопки) */
-    font-weight: 500; /* Начертание шрифта 500 (Medium) */
-}
+    // Учитываем devicePixelRatio для поддержки дисплеев с высоким разрешением (например, Retina)
+    const dpr = window.devicePixelRatio || 1; // Если devicePixelRatio не определён, используем 1
+    canvas.width = 600 * dpr; // Устанавливаем ширину canvas с учётом dpr
+    canvas.height = 88 * dpr; // Устанавливаем высоту canvas с учётом dpr
+    canvas.style.width = '600px'; // Устанавливаем отображаемую ширину canvas
+    canvas.style.height = '88px'; // Устанавливаем отображаемую высоту canvas
+    ctx.scale(dpr, dpr); // Масштабируем контекст для корректного рендеринга
 
-/* Стили для контейнера с полями ввода (форма) */
-.input-container {
-    display: flex; /* Flexbox для вертикального расположения полей */
-    flex-direction: column; /* Поля располагаются друг под другом */
-    align-items: center; /* Центрируем поля по горизонтали */
-    gap: 15px; /* Расстояние между полями ввода */
-    margin-bottom: 20px; /* Отступ снизу до кнопки */
-}
-
-/* Стили для группы ввода (лейбл + поле ввода) */
-.form__group {
-    position: relative; /* Для позиционирования лейбла */
-    padding: 15px 0 0; /* Внутренние отступы */
-    margin-top: 10px; /* Отступ сверху */
-    width: 250px; /* Ширина совпадает с кнопкой */
-    display: flex; /* Для выравнивания чекбокса и лейбла */
-    align-items: center; /* Центрируем элементы по вертикали */
-    gap: 8px; /* Добавляем небольшой отступ между чекбоксом и текстом */
-    flex-wrap: nowrap; /* Запрещаем перенос элементов */
-}
-
-/* Специальный стиль для группы с чекбоксом */
-.checkbox-group {
-    margin: 20px 0; /* Увеличиваем отступы сверху и снизу */
-}
-
-/* Стили для текстовых полей ввода */
-.form__field {
-    font-family: 'Rubik', sans-serif; /* Шрифт Rubik, как у кнопки */
-    width: 100%; /* Полная ширина */
-    border: 0; /* Убираем стандартную рамку */
-    border-bottom: 2px solid #9b9b9b; /* Подчёркивание серого цвета */
-    outline: 0; /* Убираем стандартный контур при фокусе */
-    font-size: 0.97rem; /* Размер шрифта */
-    color: #333; /* Угольный цвет текста (между чёрным и серым) */
-    padding: 7px 0; /* Внутренние отступы */
-    background: transparent; /* Прозрачный фон */
-    transition: border-color 0.2s; /* Плавное изменение цвета подчёркивания */
-}
-
-/* Плейсхолдер прозрачный (для эффекта плавающего лейбла) */
-.form__field::placeholder {
-    color: transparent;
-}
-
-/* Лейбл опускается вниз, если поле пустое */
-.form__field:placeholder-shown ~ .form__label {
-    font-size: 0.97rem; /* Размер шрифта */
-    cursor: text; /* Курсор как для текста */
-    top: 20px; /* Позиция внутри поля */
-}
-
-/* Стили для лейблов */
-.form__label {
-    position: absolute; /* Абсолютное позиционирование */
-    top: 0; /* Позиция вверху */
-    display: block; /* Блочный элемент */
-    transition: 0.2s; /* Плавная анимация */
-    font-size: 0.75rem; /* Размер шрифта */
-    color: #333; /* Угольный цвет текста (между чёрным и серым) */
-    font-family: 'Rubik', sans-serif; /* Шрифт Rubik, как у кнопки */
-}
-
-/* Стили для лейбла чекбокса */
-.checkbox-label {
-    font-family: 'Rubik', sans-serif; /* Шрифт Rubik, как у остальных элементов */
-    font-size: 0.97rem; /* Размер шрифта, как у текстовых полей */
-    color: #333; /* Угольный цвет текста */
-    margin: 0; /* Убираем лишние отступы */
-    line-height: 1; /* Для точного выравнивания */
-    position: static; /* Отключаем абсолютное позиционирование */
-    top: auto; /* Сбрасываем top */
-    display: inline; /* Убедимся, что элемент ведёт себя как строчный */
-}
-
-/* Эффект при фокусе на поле ввода */
-.form__field:focus {
-    /* Стили для лейбла при фокусе */
-    ~ .form__label {
-        position: absolute; /* Абсолютное позиционирование */
-        top: 0; /* Позиция вверху */
-        display: block; /* Блочный элемент */
-        transition: 0.2s; /* Плавная анимация */
-        font-size: 0.75rem; /* Размер шрифта */
-        color: #FF6200; /* Оранжевый цвет (сохранён из вашего дизайна) */
-        font-weight: 700; /* Жирное начертание для лейбла */
+    // Функция для управления видимостью поля "Сотовый телефон"
+    function updateMobileFieldVisibility() {
+        // Если чекбокс отмечен, убираем класс 'hidden', иначе добавляем его
+        mobileGroup.classList.toggle('hidden', !showMobileCheckbox.checked);
     }
-    padding-bottom: 6px; /* Отступ снизу для подчёркивания */
-    border-width: 3px; /* Толщина подчёркивания */
-    border-image: linear-gradient(to right, #FF6200, #e65c00); /* Градиент оранжевого цвета */
-    border-image-slice: 1; /* Указываем, как резать градиент */
-}
 
-/* Сбрасываем тени для required и invalid полей */
-.form__field:required,
-.form__field:invalid {
-    box-shadow: none;
-}
+    // Вызываем функцию сразу после загрузки страницы, чтобы установить начальное состояние
+    updateMobileFieldVisibility();
 
-/* Стили для нового чекбокса */
-.checkbox-wrapper-7 {
-    display: inline-flex; /* Убедимся, что контейнер чекбокса не сбивает flex */
-    align-items: center; /* Выравниваем содержимое по центру */
-    justify-content: center; /* Центрируем чекбокс внутри */
-}
+    // Добавляем слушатель события на изменение состояния чекбокса
+    showMobileCheckbox.addEventListener('change', updateMobileFieldVisibility);
 
-.checkbox-wrapper-7 .tgl {
-    display: none; /* Скрываем стандартный чекбокс */
-}
+    // Добавляем слушатель события на кнопку "Создать подпись" для генерации подписи
+    generateButton.addEventListener('click', generateSignature);
 
-.checkbox-wrapper-7 .tgl,
-.checkbox-wrapper-7 .tgl:after,
-.checkbox-wrapper-7 .tgl:before,
-.checkbox-wrapper-7 .tgl *,
-.checkbox-wrapper-7 .tgl *:after,
-.checkbox-wrapper-7 .tgl *:before,
-.checkbox-wrapper-7 .tgl + .tgl-btn {
-    box-sizing: border-box; /* Учитываем padding и border в размерах */
-}
+    // Добавляем эффект волны для кнопки при клике
+    generateButton.addEventListener('click', (e) => {
+        // Получаем координаты кнопки относительно окна
+        const rect = generateButton.getBoundingClientRect();
+        // Вычисляем координаты клика относительно кнопки
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        // Устанавливаем CSS-переменные для анимации волны
+        generateButton.style.setProperty('--mouse-x', `${x}px`);
+        generateButton.style.setProperty('--mouse-y', `${y}px`);
+    });
 
-.checkbox-wrapper-7 .tgl::-moz-selection,
-.checkbox-wrapper-7 .tgl:after::-moz-selection,
-.checkbox-wrapper-7 .tgl:before::-moz-selection,
-.checkbox-wrapper-7 .tgl *::-moz-selection,
-.checkbox-wrapper-7 .tgl *:after::-moz-selection,
-.checkbox-wrapper-7 .tgl *:before::-moz-selection,
-.checkbox-wrapper-7 .tgl + .tgl-btn::-moz-selection,
-.checkbox-wrapper-7 .tgl::selection,
-.checkbox-wrapper-7 .tgl:after::selection,
-.checkbox-wrapper-7 .tgl:before::selection,
-.checkbox-wrapper-7 .tgl *::selection,
-.checkbox-wrapper-7 .tgl *:after::selection,
-.checkbox-wrapper-7 .tgl *:before::selection,
-.checkbox-wrapper-7 .tgl + .tgl-btn::selection {
-    background: none; /* Убираем выделение текста */
-}
+    // Функция для генерации подписи
+    function generateSignature() {
+        // Очищаем canvas перед новой генерацией
+        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+        // Заполняем фон canvas белым цветом
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-.checkbox-wrapper-7 .tgl + .tgl-btn {
-    outline: 0; /* Убираем стандартный outline */
-    display: block; /* Блочный элемент */
-    width: 2.4em; /* Ширина чекбокса */
-    height: 1.2em; /* Высота чекбокса */
-    position: relative; /* Относительное позиционирование */
-    cursor: pointer; /* Курсор "рука" */
-    -webkit-user-select: none; /* Запрещаем выделение */
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-}
+        // Создаём объекты изображений для логотипа и иконок
+        const logo = new Image();
+        logo.src = 'img/logo.png'; // Логотип компании
+        const addressIcon = new Image();
+        addressIcon.src = 'img/address-icon.png'; // Иконка адреса
+        const phoneIcon = new Image();
+        phoneIcon.src = 'img/phone-icon.png'; // Иконка телефона
+        const emailIcon = new Image();
+        emailIcon.src = 'img/email-icon.png'; // Иконка email
+        const webIcon = new Image();
+        webIcon.src = 'img/web-icon.png'; // Иконка веб-сайта
 
-.checkbox-wrapper-7 .tgl + .tgl-btn:after,
-.checkbox-wrapper-7 .tgl + .tgl-btn:before {
-    position: relative; /* Относительное позиционирование */
-    display: block; /* Блочный элемент */
-    content: ""; /* Пустой контент */
-    width: 50%; /* Ширина ползунка */
-    height: 100%; /* Полная высота */
-}
+        // Переменная для отслеживания количества загруженных изображений
+        let loadedImages = 0;
+        const totalImages = 5; // Всего 5 изображений
 
-.checkbox-wrapper-7 .tgl + .tgl-btn:after {
-    left: 0; /* Начальная позиция ползунка */
-}
+        // Функция для проверки загрузки всех изображений
+        function checkAllImagesLoaded() {
+            loadedImages++;
+            // Если все изображения загружены, рендерим содержимое
+            if (loadedImages === totalImages) {
+                renderContent();
+            }
+        }
 
-.checkbox-wrapper-7 .tgl + .tgl-btn:before {
-    display: none; /* Скрываем псевдоэлемент :before */
-}
+        // Добавляем обработчики событий для загрузки изображений
+        logo.onload = function () {
+            console.log(`Logo loaded: ${logo.width}x${logo.height}`);
+            checkAllImagesLoaded();
+        };
+        addressIcon.onload = function () {
+            console.log(`Address icon loaded: ${addressIcon.width}x${addressIcon.height}`);
+            checkAllImagesLoaded();
+        };
+        phoneIcon.onload = function () {
+            console.log(`Phone icon loaded: ${phoneIcon.width}x${phoneIcon.height}`);
+            checkAllImagesLoaded();
+        };
+        emailIcon.onload = function () {
+            console.log(`Email icon loaded: ${emailIcon.width}x${emailIcon.height}`);
+            checkAllImagesLoaded();
+        };
+        webIcon.onload = function () {
+            console.log(`Web icon loaded: ${webIcon.width}x${webIcon.height}`);
+            checkAllImagesLoaded();
+        };
 
-.checkbox-wrapper-7 .tgl:checked + .tgl-btn:after {
-    left: 50%; /* Ползунок сдвигается вправо при активации */
-}
+        // Добавляем обработчики ошибок для каждого изображения
+        logo.onerror = function () {
+            console.error('Ошибка загрузки логотипа');
+            checkAllImagesLoaded();
+        };
+        addressIcon.onerror = function () {
+            console.error('Ошибка загрузки address-icon.png');
+            checkAllImagesLoaded();
+        };
+        phoneIcon.onerror = function () {
+            console.error('Ошибка загрузки phone-icon.png');
+            checkAllImagesLoaded();
+        };
+        emailIcon.onerror = function () {
+            console.error('Ошибка загрузки email-icon.png');
+            checkAllImagesLoaded();
+        };
+        webIcon.onerror = function () {
+            console.error('Ошибка загрузки web-icon.png');
+            checkAllImagesLoaded();
+        };
 
-.checkbox-wrapper-7 .tgl-ios + .tgl-btn {
-    background: #fbfbfb; /* Фон переключателя в неактивном состоянии */
-    border-radius: 1.2em; /* Скругление углов */
-    padding: 1.2px; /* Внутренний отступ */
-    transition: all 0.4s ease; /* Плавная анимация */
-    border: 1px solid #e8eae9; /* Тонкая серая рамка */
-}
+        // Функция для рендеринга содержимого подписи на canvas
+        function renderContent() {
+            // Определяем параметры для рендеринга
+            const fontSize = 11.5 * dpr; // Размер шрифта с учётом dpr
+            const fontFamily = 'Calibri'; // Шрифт текста
+            const textColor = '#000000'; // Цвет текста
+            const lineHeight = 14 * dpr; // Высота строки с учётом dpr
+            const iconWidth = 13 * dpr; // Ширина иконок
+            const iconHeight = 10 * dpr; // Высота иконок
+            const iconOffset = 10 * dpr; // Отступ между иконкой и текстом
+            const logoWidth = 171 * dpr; // Ширина логотипа
+            const logoHeight = 88 * dpr; // Высота логотипа
+            const canvasWidth = 600 * dpr; // Ширина canvas
+            const canvasHeight = 88 * dpr; // Высота canvas
+            const logoPadding = 10 * dpr; // Отступ для логотипа
+            const textPadding = 20 * dpr; // Отступ для текста
+            const fourLineOffset = (logoHeight - (4 * lineHeight)) / 2; // Смещение для 4 строк
+            const fiveLineOffset = 10 * dpr; // Смещение для 5 строк
+            const iconYAdjust = (lineHeight - iconHeight) / 2; // Корректировка Y для иконок
+            const textYAdjust = 10 * dpr; // Корректировка Y для текста
 
-.checkbox-wrapper-7 .tgl-ios + .tgl-btn:after {
-    border-radius: 1.2em; /* Скругление углов ползунка */
-    background: #fbfbfb; /* Фон ползунка */
-    transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding 0.3s ease, margin 0.3s ease; /* Анимация движения */
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 2.4px 0 rgba(0, 0, 0, 0.08); /* Тень для эффекта объёта */
-}
+            // Устанавливаем шрифт и цвет текста
+            ctx.font = `${fontSize}px ${fontFamily}`;
+            ctx.fillStyle = textColor;
+            ctx.textRendering = 'geometricPrecision'; // Оптимизация рендеринга текста
 
-.checkbox-wrapper-7 .tgl-ios + .tgl-btn:hover:after {
-    will-change: padding; /* Оптимизация анимации */
-}
+            // Получаем данные из полей ввода (с значениями по умолчанию, если поля пустые)
+            const office = document.getElementById('office').value || '330';
+            const address = `600005, г.Владимир, ул.Тракторная, д.45, офис ${office}`; // Формируем адрес
+            const extension = document.getElementById('extension').value || '2144';
+            const formattedExtension = `+7 (4922) 53-77-55 (${extension.padStart(4, '0')})`; // Форматируем добавочный номер
+            const mobile = document.getElementById('mobile').value || ''; // Номер мобильного телефона
+            const email = document.getElementById('email').value || 'name@domain.ru'; // Email
+            const web = 'abidev.ru'; // URL сайта
 
-.checkbox-wrapper-7 .tgl-ios + .tgl-btn:active {
-    box-shadow: inset 0 0 0 2em #e8eae9; /* Эффект нажатия */
-}
+            // Определяем количество строк в подписи
+            let lineCount = 4; // Базово 4 строки (адрес, телефон, email, сайт)
+            if (showMobileCheckbox.checked && mobile) {
+                lineCount += 1; // Добавляем строку для мобильного телефона, если чекбокс включён и поле заполнено
+            }
 
-.checkbox-wrapper-7 .tgl-ios + .tgl-btn:active:after {
-    padding-right: 0.48em; /* Эффект сжатия ползунка */
-}
+            // Рисуем логотип на canvas
+            ctx.drawImage(logo, logoPadding, 0, logoWidth, logoHeight);
 
-.checkbox-wrapper-7 .tgl-ios:checked + .tgl-btn {
-    background: #FF6200; /* Оранжевый цвет в активном состоянии */
-}
+            // Вычисляем начальную позицию текста
+            const logoRightEdge = logoPadding + logoWidth + logoPadding; // Правая граница логотипа
+            const textX = logoRightEdge + textPadding; // Начальная X-координата текста
+            let currentY = lineCount === 4 ? fourLineOffset : fiveLineOffset; // Начальная Y-координата текста
+            let y = currentY; // Текущая Y-координата для рендеринга строк
 
-.checkbox-wrapper-7 .tgl-ios:checked + .tgl-btn:active {
-    box-shadow: none; /* Убираем тень при нажатии в активном состоянии */
-}
+            // Рисуем адрес
+            ctx.drawImage(addressIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
+            ctx.fillText(address, textX, y + textYAdjust);
+            y += lineHeight; // Переходим к следующей строке
 
-.checkbox-wrapper-7 .tgl-ios:checked + .tgl-btn:active:after {
-    margin-left: -0.48em; /* Эффект сжатия ползунка в активном состоянии */
-}
+            // Рисуем добавочный номер
+            ctx.drawImage(phoneIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
+            ctx.fillText(formattedExtension, textX, y + textYAdjust);
+            y += lineHeight; // Переходим к следующей строке
 
-/* Скрытие поля мобильного телефона, когда чекбокс не отмечен */
-#mobileGroup.hidden {
-    visibility: hidden; /* Делает блок невидимым, но он продолжает занимать место */
-}
+            // Рисуем мобильный телефон, если чекбокс включён и поле заполнено
+            if (showMobileCheckbox.checked && mobile) {
+                ctx.drawImage(phoneIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
+                ctx.fillText(mobile, textX, y + textYAdjust);
+                y += lineHeight; // Переходим к следующей строке
+            }
 
-/* Стили для canvas (холста), где отображается сгенерированная подпись */
-#signature {
-    border: 1px solid #ccc; /* Тонкая серая рамка вокруг холста */
-    margin-top: 20px; /* Отступ сверху от кнопки */
-}
+            // Рисуем email
+            ctx.drawImage(emailIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
+            ctx.fillText(email, textX, y + textYAdjust);
+            y += lineHeight; // Переходим к следующей строке
 
-/* Стили для кнопки "Создать подпись" */
-.button {
-    padding: 16px 42px; /* Внутренние отступы кнопки (вертикаль/горизонталь) */
-    border-radius: 3px; /* Скругление углов кнопки */
-    box-shadow: 0px 0px 12px -2px rgba(0, 0, 0, 0.5); /* Тень для эффекта объёта */
-    line-height: 1.25; /* Высота строки текста внутри кнопки */
-    background: #FF6200; /* Оранжевый фон кнопки (сохранён из оригинального дизайна) */
-    text-decoration: none; /* Убираем подчёркивание (для совместимости, если кнопка — ссылка) */
-    user-select: none; /* Запрещаем выделение текста кнопки */
-    color: white; /* Белый цвет текста */
-    font-size: 16px; /* Размер шрифта текста кнопки */
-    font-family: 'Rubik', sans-serif; /* Шрифт Rubik для текста кнопки */
-    letter-spacing: .08em; /* Межбуквенный интервал для улучшения читаемости */
-    text-transform: uppercase; /* Текст кнопки в верхнем регистре */
-    position: relative; /* Относительное позиционирование для псевдоэлемента ::after */
-    transition: background-color .6s ease; /* Плавное изменение цвета фона при наведении */
-    overflow: hidden; /* Скрываем содержимое, выходящее за границы кнопки (для эффекта волны) */
-    border: none; /* Убираем стандартную обводку кнопки */
-    cursor: pointer; /* Курсор "рука" при наведении */
-}
+            // Рисуем URL сайта
+            ctx.drawImage(webIcon, textX - iconWidth - iconOffset, y + iconYAdjust, iconWidth, iconHeight);
+            ctx.fillText(web, textX, y + textYAdjust);
 
-/* Псевдоэлемент ::after для создания эффекта "волны" при нажатии */
-.button::after {
-    content: ""; /* Пустой контент, так как это псевдоэлемент */
-    position: absolute; /* Абсолютное позиционирование относительно кнопки */
-    width: 0; /* Начальная ширина круга (0) */
-    height: 0; /* Начальная высота круга (0) */
-    top: 50%; /* Начальная позиция по вертикали (центр кнопки) */
-    left: 50%; /* Начальная позиция по горизонтали (центр кнопки) */
-    top: var(--mouse-y); /* Переопределяем позицию по Y на основе координаты клика */
-    left: var(--mouse-x); /* Переопределяем позицию по X на основе координаты клика */
-    transform-style: flat; /* Устанавливаем стиль трансформации (для совместимости) */
-    transform: translate3d(-50%, -50%, 0); /* Центрируем круг относительно точки клика */
-    background: rgba(255, 255, 255, 0.1); /* Полупрозрачный белый фон для эффекта волны */
-    border-radius: 100%; /* Делаем элемент круглым */
-    transition: width .3s ease, height .3s ease; /* Плавное увеличение размеров круга */
-}
-
-/* Стили для кнопки при наведении курсора или фокусе */
-.button:focus,
-.button:hover {
-    background: #e65c00; /* Более тёмный оранжевый цвет при наведении */
-}
-
-/* Эффект волны при нажатии на кнопку */
-.button:active::after {
-    width: 300px; /* Увеличиваем ширину круга до 300px */
-    height: 300px; /* Увеличиваем высоту круга до 300px */
-}
+            // Сохраняем подпись как PNG-файл и автоматически скачиваем её
+            canvas.toBlob(function (blob) {
+                const url = URL.createObjectURL(blob); // Создаём URL для blob
+                const link = document.createElement('a'); // Создаём ссылку для скачивания
+                link.href = url;
+                link.download = 'signature.png'; // Имя файла для скачивания
+                document.body.appendChild(link); // Добавляем ссылку в DOM
+                link.click(); // Программно кликаем по ссылке для скачивания
+                document.body.removeChild(link); // Удаляем ссылку из DOM
+                URL.revokeObjectURL(url); // Освобождаем память
+            }, 'image/png'); // Формат изображения — PNG
+        }
+    }
+});
