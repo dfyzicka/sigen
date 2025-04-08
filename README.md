@@ -1,7 +1,8 @@
 
+🚀 Сборка Docker-образа
 
 ```markdown
-🚀 Сборка Docker-образа
+
 
 ```bash
 docker build -t signature-gen .
