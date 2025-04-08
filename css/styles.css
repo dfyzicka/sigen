@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 171px;
+    height: 88px;
+    margin-right: 15px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #FF6200;
+    font-family: 'Helvetica', sans-serif;
+    font-weight: 300;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 220px;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.input-group input[type="text"] {
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#mobileGroup.hidden {
+    visibility: hidden;
+}
+
+#mobileGroup {
+    visibility: visible;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #FF6200;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #e65c00;
+}
+
+#signature {
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}

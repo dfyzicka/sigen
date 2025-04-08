@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор подписи</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <img src="img/logo.png" alt="Логотип">
+        <h2>Создание подписи</h2>
+    </div>
+
+    <div class="input-container">
+        <div class="input-group">
+            <label for="office">Номер офиса:</label>
+            <input type="text" id="office" placeholder="330">
+        </div>
+
+        <div class="input-group">
+            <label for="extension">Добавочный номер (4 цифры):</label>
+            <input type="text" id="extension" placeholder="2144" maxlength="4">
+        </div>
+
+        <div class="input-group">
+            <label>
+                <input type="checkbox" id="showMobile">
+                Показывать сотовый телефон
+            </label>
+        </div>
+
+        <div class="input-group" id="mobileGroup" class="hidden">
+            <label for="mobile">Сотовый телефон:</label>
+            <input type="text" id="mobile" placeholder="8 999 789 10 12">
+        </div>
+
+        <div class="input-group">
+            <label for="email">Email:</label>
+            <input type="text" id="email" placeholder="name@domain.ru">
+        </div>
+    </div>
+
+    <button onclick="generateSignature()">Создать подпись</button>
+    <br>
+    <canvas id="signature" width="600" height="88"></canvas>
+
+    <script src="scripts/script.js"></script>
+</body>
+</html>
