@@ -1,0 +1,61 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # Деплой будет срабатывать при пуше в ветку main, можешь изменить на свою ветку
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            # Переход в домашнюю директорию
+            cd ~
+
+            # Удаление старой папки sigen, если существует
+            [ -d "sigen" ] && rm -rf sigen
+
+            # Клонирование репозитория
+            git clone https://github.com/dfyzicka/sigen.git
+
+            # Переход в папку sigen
+            cd sigen
+
+            # Остановка и удаление старого контейнера, если существует
+            if docker ps -q -f name=signature-container | grep -q .; then
+              docker stop signature-container
+              docker rm signature-container
+            elif docker ps -aq -f name=signature-container | grep -q .; then
+              docker rm signature-container
+            fi
+
+            # Удаление старого образа, если существует
+            if docker images -q signature-gen | grep -q .; then
+              docker rmi signature-gen
+            fi
+
+            # Сборка и запуск нового контейнера
+            docker build -t signature-gen .
+            docker run -d -p 8080:80 --name signature-container --restart always signature-gen
+
+            # Проверка статуса
+            if docker ps -q -f name=signature-container | grep -q .; then
+              echo "Deploy successful!"
+            else
+              echo "Deploy failed!"
+              exit 1
+            fi
+          EOF
