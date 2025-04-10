@@ -146,10 +146,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const fiveLineOffset = 10 * dpr; // Смещение для 5 строк
             const iconYAdjust = (lineHeight - iconHeight) / 2; // Корректировка Y для иконок
             const textYAdjust = 10 * dpr; // Корректировка Y для текста
+            const letterSpacing = 1 * dpr; // Межбуквенный интервал с учётом dpr (новый параметр)
 
-            // Устанавливаем шрифт и цвет текста
+            // Устанавливаем шрифт, цвет текста и межбуквенный интервал
             ctx.font = `${fontSize}px ${fontFamily}`;
             ctx.fillStyle = textColor;
+            ctx.letterSpacing = `${letterSpacing}px`; // Применяем межбуквенный интервал
             ctx.textRendering = 'geometricPrecision'; // Оптимизация рендеринга текста
 
             // Получаем данные из полей ввода (с значениями по умолчанию, если поля пустые)
