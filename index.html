@@ -1,0 +1,80 @@
+<!DOCTYPE html> <!-- Объявление типа документа HTML5 -->
+<html lang="ru"> <!-- Корневой элемент HTML с указанием языка (русский) -->
+<head>
+    <!-- Указываем кодировку UTF-8 для корректного отображения русских символов -->
+    <meta charset="UTF-8">
+    <!-- Заголовок страницы, отображается во вкладке браузера -->
+    <title>Генератор подписи</title>
+    <!-- Подключаем внешний файл стилей для оформления страницы -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body> <!-- Тело документа, содержит видимое содержимое страницы -->
+    <!-- Контейнер заголовка с логотипом и текстом -->
+    <div class="header">
+        <!-- Изображение логотипа компании, путь к файлу в папке img -->
+        <img src="img/logo.png" alt="Логотип">
+        <!-- Заголовок второго уровня с текстом "Создание подписи" -->
+        <h2>Создание подписи</h2>
+    </div>
+
+    <!-- Контейнер для полей ввода формы -->
+    <div class="input-container">
+        <!-- Группа элементов для ввода номера офиса -->
+        <div class="form__group">
+            <!-- Поле ввода для номера офиса, ограничено 3 символами -->
+            <input type="text" id="office" class="form__field" placeholder=" " maxlength="3" />
+            <!-- Лейбл, связанный с полем ввода номера офиса -->
+            <label for="office" class="form__label">Номер офиса:</label>
+        </div>
+
+        <!-- Группа элементов для ввода добавочного номера -->
+        <div class="form__group">
+            <!-- Поле ввода для добавочного номера, ограничено 4 символами -->
+            <input type="text" id="extension" class="form__field" placeholder=" " maxlength="4" />
+            <!-- Лейбл, связанный с полем ввода добавочного номера -->
+            <label for="extension" class="form__label">Добавочный номер:</label>
+        </div>
+
+        <!-- Группа элементов для чекбокса "Добавить сотовый телефон" -->
+        <div class="form__group checkbox-group">
+            <!-- Контейнер для стилизованного переключателя (чекбокса) -->
+            <div class="checkbox-wrapper-7">
+                <!-- Скрытый чекбокс для управления видимостью поля мобильного телефона -->
+                <input class="tgl tgl-ios" id="showMobile" type="checkbox"/>
+                <!-- Элемент оформления чекбокса, стилизованный как переключатель -->
+                <label class="tgl-btn" for="showMobile"></label>
+            </div>
+            <!-- Лейбл для чекбокса, описывающий его назначение -->
+            <label for="showMobile" class="form__label checkbox-label">Добавить сотовый телефон</label>
+        </div>
+
+        <!-- Группа элементов для ввода мобильного телефона, изначально скрыта -->
+        <div class="form__group" id="mobileGroup" class="hidden">
+            <!-- Поле ввода для мобильного телефона -->
+            <input type="text" id="mobile" class="form__field" placeholder=" " />
+            <!-- Лейбл, связанный с полем ввода мобильного телефона -->
+            <label for="mobile" class="form__label">Сотовый телефон:</label>
+        </div>
+
+        <!-- Группа элементов для ввода email -->
+        <div class="form__group">
+            <!-- Поле ввода для email -->
+            <input type="text" id="email" class="form__field" placeholder=" " />
+            <!-- Лейбл, связанный с полем ввода email -->
+            <label for="email" class="form__label">Email:</label>
+        </div>
+    </div>
+
+    <!-- Кнопка для запуска генерации подписи -->
+    <button class="button">Создать подпись</button>
+    <!-- Разрыв строки для визуального разделения элементов -->
+    <br>
+    <!-- Элемент canvas для отображения сгенерированной подписи, размер 600x88 пикселей -->
+    <canvas id="signature" width="600" height="88"></canvas>
+    <!-- Анимированная стрелка вниз для привлечения внимания -->
+    <script src="scripts/script.js"></script>
+    <!-- Подключаем внешний файл JavaScript для логики генерации подписи -->
+
+    <div class="arrow bounce"></div>
+</body>
+</html>
