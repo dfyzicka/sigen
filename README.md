@@ -38,9 +38,4 @@ docker stop signature-container
 ```bash
 docker rm signature-container
 ```
-```bash
-docker rm signature-container
-``````bash
-docker rm signature-container
-```
 
