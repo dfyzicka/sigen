@@ -304,3 +304,36 @@ body {
     width: 300px; /* Увеличиваем ширину круга до 300px */
     height: 300px; /* Увеличиваем высоту круга до 300px */
 }
+
+/* прыгалка */
+body {
+    min-height: 100vh; /* Минимальная высота страницы */
+    position: relative; /* Для позиционирования стрелки */
+}
+
+.arrow {
+    position: absolute; /* Абсолютное позиционирование */
+    bottom: 20px; /* Отступ от низа */
+    left: 50%; /* Центрирование по горизонтали */
+    transform: translateX(-50%); /* Точное центрирование */
+    width: 40px;
+    height: 40px;
+    background-image: url('../img/arrow.svg'); /* Путь к файлу */
+    background-size: contain;
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
